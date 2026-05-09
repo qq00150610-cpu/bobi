@@ -6,6 +6,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
 import okhttp3.*
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Request.Builder
 import org.json.JSONArray
 import org.json.JSONObject
@@ -37,7 +39,7 @@ object ApiClient {
                     put("content", content)
                     put("channel", channel)
                 }
-                val body = json.toString().toRequestBody("application/json".toMediaType())
+                val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
                 val request = Builder()
                     .url(baseUrl + "message")
                     .post(body)
@@ -197,13 +199,5 @@ object ApiClient {
                 Result.failure(Exception("网络错误: ${e.localizedMessage}"))
             }
         }
-    }
-
-    private fun String.toMediaType(): MediaType {
-        return MediaType.parse(this)!!
-    }
-
-    private fun String.toRequestBody(mediaType: MediaType): RequestBody {
-        return RequestBody.create(mediaType, this)
     }
 }
